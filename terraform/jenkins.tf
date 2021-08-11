@@ -106,6 +106,7 @@ resource "aws_instance" "jenkins_instance" {
     instance_type = "t2.micro"
     availability_zone = "${var.region}a"
     key_name = "jenkins-key2"
+    iam_instance_profile = aws_iam_instance_profile.jenkins_profile.name
     
     network_interface {
         device_index = 0
