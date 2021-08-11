@@ -1,60 +1,60 @@
-resource "aws_vpc" "jenkins-vpc" {
+resource "aws_vpc" "jenkins_vpc" {
     cidr_block = "10.0.0.0/16"
     enable_dns_hostnames = true
     enable_dns_support = true
 
     tags = {
-      "Name" = "jenkins-vpc"
+      "Name" = "jenkins_vpc"
     }
 }
 
-resource "aws_internet_gateway" "jenkins-ig" {
-    vpc_id = aws_vpc.jenkins-vpc.id
+resource "aws_internet_gateway" "jenkins_ig" {
+    vpc_id = aws_vpc.jenkins_vpc.id
 
     tags = {
-        Name="jenkins-internet-gateway"
+        Name="jenkins_internet_gateway"
     }
 }
 
-resource "aws_route_table" "jenkins-vpc-rt" {
-    vpc_id = aws_vpc.jenkins-vpc.id
+resource "aws_route_table" "jenkins_vpc_rt" {
+    vpc_id = aws_vpc.jenkins_vpc.id
 
     route {
         cidr_block = "0.0.0.0/0"
-        gateway_id = aws_internet_gateway.jenkins-ig.id
+        gateway_id = aws_internet_gateway.jenkins_ig.id
     }
 
     tags = {
-        Name="jenkins-route-table"
+        Name="jenkins_route_table"
     }
 }
 
-resource "aws_subnet" "jenkins-subnet" {
-    vpc_id = aws_vpc.jenkins-vpc.id
+resource "aws_subnet" "jenkins_subnet" {
+    vpc_id = aws_vpc.jenkins_vpc.id
     cidr_block = "10.0.0.0/24"
     availability_zone = "${var.region}a"
 
     tags = {
-        Name="jenkins-subnet"
+        Name="jenkins_subnet"
     }
 }
 
-resource "aws_route_table_association" "jenkins-association" {
-    subnet_id = aws_subnet.jenkins-subnet.id
-    route_table_id = aws_route_table.jenkins-vpc-rt.id
+resource "aws_route_table_association" "jenkins_association" {
+    subnet_id = aws_subnet.jenkins_subnet.id
+    route_table_id = aws_route_table.jenkins_vpc_rt.id
 }
 
-resource "aws_security_group" "jenkins-sg" {
-    name = "jenkins-security"
+resource "aws_security_group" "jenkins_sg" {
+    name = "jenkins_security"
     description = "Security group for jenkins server"
-    vpc_id = aws_vpc.jenkins-vpc.id
+    vpc_id = aws_vpc.jenkins_vpc.id
 
     ingress {
         from_port = 22
         to_port = 22
         protocol = "tcp"
         description = "Allow ssh from specified ip"
-        cidr_blocks = [ var.ssh-ip ]
+        cidr_blocks = [ var.ssh_ip ]
     }
 
     ingress {
@@ -62,7 +62,7 @@ resource "aws_security_group" "jenkins-sg" {
         to_port = 8080
         protocol = "tcp"
         description = "Allow jenkins access from specified ip"
-        cidr_blocks = [ var.ssh-ip ]
+        cidr_blocks = [ var.ssh_ip ]
     }
 
     egress {
@@ -78,30 +78,30 @@ resource "aws_security_group" "jenkins-sg" {
     }
 }
 
-resource "aws_network_interface" "jenkins-nic" {
-    subnet_id = aws_subnet.jenkins-subnet.id
+resource "aws_network_interface" "jenkins_nic" {
+    subnet_id = aws_subnet.jenkins_subnet.id
     private_ips = [ "10.0.0.50" ]
-    security_groups = [ aws_security_group.jenkins-sg.id ]
+    security_groups = [ aws_security_group.jenkins_sg.id ]
 
     tags = {
-      Name = "jenkins-network-interface"
+      Name = "jenkins_network_interface"
     }
 }
 
-resource "aws_eip" "jenkins-eip" {
+resource "aws_eip" "jenkins_eip" {
     vpc = true
-    network_interface = aws_network_interface.jenkins-nic.id
+    network_interface = aws_network_interface.jenkins_nic.id
     associate_with_private_ip = "10.0.0.50"
     depends_on = [
-      aws_internet_gateway.jenkins-ig
+      aws_internet_gateway.jenkins_ig
     ]
 
     tags = {
-      Name = "jenkins-elastic-ip"
+      Name = "jenkins_elastic_ip"
     }
 }
 
-resource "aws_instance" "jenkins-instance" {
+resource "aws_instance" "jenkins_instance" {
     ami = "ami-09e67e426f25ce0d7"
     instance_type = "t2.micro"
     availability_zone = "${var.region}a"
@@ -109,7 +109,7 @@ resource "aws_instance" "jenkins-instance" {
     
     network_interface {
         device_index = 0
-        network_interface_id = aws_network_interface.jenkins-nic.id
+        network_interface_id = aws_network_interface.jenkins_nic.id
     }
 
     user_data = <<-EOF
@@ -145,13 +145,13 @@ resource "aws_instance" "jenkins-instance" {
                 EOF
 
     tags = {
-      Name = "jenkins-instance"
+      Name = "jenkins_instance"
     }
 }
 
-output "jenkins-eip" {
-    value = aws_eip.jenkins-eip.public_ip
+output "jenkins_eip" {
+    value = aws_eip.jenkins_eip.public_ip
 }
-output "jenkins-public-dns" {
-    value = aws_instance.jenkins-instance.public_dns
+output "jenkins_public_dns" {
+    value = aws_instance.jenkins_instance.public_dns
 }

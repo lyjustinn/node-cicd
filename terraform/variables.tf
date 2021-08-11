@@ -2,6 +2,6 @@ variable "region" {
     type = string
 }
 
-variable "ssh-ip" {
+variable "ssh_ip" {
     type = string
 }
