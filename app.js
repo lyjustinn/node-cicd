@@ -11,6 +11,10 @@ app.get('/api/double/:number', (req, res, next) => {
     res.json({double: req.params.number*2});
 });
 
+app.get('/api/triple/:number', (req, res, next) => {
+    res.json({triple: req.params.number*2});
+});
+
 app.listen(PORT, () => {
     console.log('Server running');
 });
