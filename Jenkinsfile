@@ -9,7 +9,7 @@ pipeline {
         }
         stage("aws-cred") {
             steps {
-                aws sts get-caller-identity
+                sh 'aws sts get-caller-identity'
             }
         }
     }
