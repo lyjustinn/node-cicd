@@ -7,5 +7,10 @@ pipeline {
                 echo "hello world"
             }
         }
+        stage("aws-cred") {
+            steps {
+                aws sts get-caller-identity
+            }
+        }
     }
 }
