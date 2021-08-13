@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        BUILD = env.BUILD_NUMBER_NUMBER
+        BUILD = "${env.BUILD_NUMBER}"
         AWS_REGION = credentials('aws-region')
         AWS_ACCOUNT_ID = credentials('aws-account-id')
         AWS_REPOSITORY = credentials('aws-ecr-repository')
