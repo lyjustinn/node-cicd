@@ -22,10 +22,10 @@ pipeline {
         stage("push-image") {
             steps {
                 echo "push ${BUILD} image"
-                sh('sudo docker pull hello-world')
+                sh('docker pull hello-world')
                 sh('aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com')
-                sh('sudo docker tag hello-world $AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$AWS_REPOSITORY:$BUILD')
-                sh('sudo docker push $AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$AWS_REPOSITORY:$BUILD')
+                sh('docker tag hello-world $AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$AWS_REPOSITORY:$BUILD')
+                sh('docker push $AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$AWS_REPOSITORY:$BUILD')
             }
         }
     }
