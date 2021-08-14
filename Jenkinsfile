@@ -9,9 +9,16 @@ pipeline {
     }
 
     stages {
-        stage("hello-world") {
+        stage("build") {
             steps {
-                echo "hello world"
+                echo "build stage"
+                sh('npm ci')
+            }
+        }
+        stage("test") {
+            steps {
+                echo "test stage"
+                sh('npm run test --if-present')
             }
         }
         stage("aws-cred") {
@@ -19,7 +26,7 @@ pipeline {
                 sh 'aws sts get-caller-identity'
             }
         }
-        stage("push-image") {
+        stage("deploy") {
             steps {
                 echo "push ${BUILD} image"
                 sh('sudo docker pull hello-world')
@@ -30,6 +37,7 @@ pipeline {
         }
         stage("cleanup") {
             steps {
+                sh('sudo docker image prune -f')
                 sh('sudo docker logout $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com')
             }
         }
