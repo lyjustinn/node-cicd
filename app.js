@@ -1,20 +1,19 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
+
+const double = require('./util/double');
+const triple = require('./util/triple');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 app.use(cors())
 
 app.get('/api/double/:number', (req, res, next) => {
-    res.json({double: req.params.number*2});
+    res.json(double(req.params.number));
 });
 
 app.get('/api/triple/:number', (req, res, next) => {
-    res.json({triple: req.params.number*2});
+    res.json(triple(req.params.number));
 });
 
-app.listen(PORT, () => {
-    console.log('Server running');
-});
+module.exports = app;

@@ -1,0 +1,1 @@
+module.exports = (num) => ({ triple : 3*num });

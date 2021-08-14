@@ -1,0 +1,1 @@
+module.exports = (num) => ({ double : 2*num });
