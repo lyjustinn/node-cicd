@@ -8,6 +8,8 @@ pipeline {
         AWS_REPOSITORY = credentials('aws-ecr-repository')
     }
 
+    tools { nodejs "node" }
+
     stages {
         stage("build") {
             steps {
