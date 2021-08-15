@@ -42,10 +42,6 @@ resource "aws_codepipeline" "ecr_cicd" {
     }
 
     stage {
-        name = "Build"
-    }
-
-    stage {
         name = "Deploy"
 
         action {
@@ -55,7 +51,7 @@ resource "aws_codepipeline" "ecr_cicd" {
             provider = "CodeDeployToECS"
             version = 1
 
-            input_artifacts = [ "SourceArtifact", "Image", "imageDetail.json"]
+            input_artifacts = [ "SourceArtifact", "Image" ]
 
             configuration = {
                 ApplicationName = aws_codedeploy_app.ecs_codedeploy_app.name

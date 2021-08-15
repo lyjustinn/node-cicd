@@ -39,6 +39,11 @@ resource "aws_iam_role_policy" "jenkins_ecr_policy" {
                     "ecr:UntagResource"
                 ]
                 Resource = "${aws_ecr_repository.ecr_cicd.arn}"
+            },
+            {
+            "Effect": "Allow",
+            "Action": "ecr:GetAuthorizationToken",
+            "Resource": "*"
             }
         ]
     })
