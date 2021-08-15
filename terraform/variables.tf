@@ -22,3 +22,8 @@ variable "ecs_lb_ports" {
     default = ["80", "8080"]
     type = tuple([string, string])
 }
+
+variable "container_port" {
+    description = "Port number the application will run on in its container"
+    type = number
+}

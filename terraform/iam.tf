@@ -48,3 +48,29 @@ resource "aws_iam_instance_profile" "jenkins_profile" {
     name = "jenkins_profile"
     role = aws_iam_role.jenkins_iam.name
 }
+
+resource "aws_iam_role" "ecs_task_execution" {
+    name = "ecs-task-execution"
+    assume_role_policy = jsonencode({
+        Version = "2012-10-17",
+        Statement = [
+            {
+                Action = "sts:AssumeRole"
+                Effect = "Allow"
+                Sid = ""
+                Principal = {
+                    Service = "ecs-tasks.amazonaws.com"
+                }
+            }
+        ]
+    })
+}
+
+data "aws_iam_policy" "ECSTaskExecutionRolePolicy" {
+    arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
+    role = aws_iam_role.ecs_task_execution.name
+    policy_arn = data.aws_iam_policy.ECSTaskExecutionRolePolicy.arn
+}
