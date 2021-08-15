@@ -2,6 +2,7 @@ resource "aws_lb" "ecs_lb" {
     name = "ecs-lb"
     load_balancer_type = "application"
     ip_address_type = "ipv4"
+    subnets = aws_subnet.ecs_subnet.*.id
 
     tags = {
         Environment = "production"
@@ -16,6 +17,7 @@ resource "aws_lb_target_group" "ecs_tg" {
     port = var.ecs_lb_ports[count.index]
     protocol = "HTTP"
     vpc_id = aws_vpc.ecs_vpc.id
+    target_type = "ip"
 
     tags = {
         Environment = "production"
@@ -32,7 +34,7 @@ resource "aws_lb_listener" "ecs_lb_listener" {
     protocol = "HTTP"
 
     default_action {
-        type = "${ count.index == 1 ? "forward" : "fixed-response"}"
-        target_group_arn = "${ count.index == 1 ? aws_lb_target_group.ecs_tg.*.arn[count.index] : null }"
+        type = "forward"
+        target_group_arn = "${aws_lb_target_group.ecs_tg.*.arn[0]}"
     }
 }

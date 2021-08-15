@@ -102,6 +102,7 @@ resource "aws_subnet" "ecs_subnet" {
     vpc_id = aws_vpc.ecs_vpc.id
     cidr_block = "${var.ecs_subnet_cidrs[count.index]}"
     availability_zone = "${var.ecs_az[count.index]}"
+    map_public_ip_on_launch = true
 
     tags = {
         Name="ecs_subnet_${count.index}"

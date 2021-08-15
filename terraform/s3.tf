@@ -1,6 +1,6 @@
 data "archive_file" "source_artifact" {
     type = "zip"
-    output_path = "SourceArtifact.json"
+    output_path = "${abspath(path.module)}/SourceArtifact.zip"
     
     source {
         content = jsonencode({
@@ -24,6 +24,7 @@ data "archive_file" "source_artifact" {
             ]
             networkMode = "awsvpc"
             family = "ecs-cd-task-def"
+            memory = 512
         })
 
         filename = "taskdef.json"
@@ -52,11 +53,15 @@ data "archive_file" "source_artifact" {
     }
 }
 resource "aws_s3_bucket" "artifacts" {
-    bucket = "artifacts"
+    bucket_prefix = "cicd-artifacts"
     acl    = "private"
 
+    versioning {
+        enabled = true
+    }
+
     tags = {
-        Name = "artifacts"
+        Name = "cicd-artifacts"
     }
 }
 
@@ -67,10 +72,14 @@ resource "aws_s3_bucket_object" "source_artifact" {
 }
 
 resource "aws_s3_bucket" "codepipeline" {
-    bucket = "codepipeline"
+    bucket_prefix  = "cicd-codepipeline"
     acl    = "private"
+    
+    versioning {
+        enabled = true
+    }
 
     tags = {
-        Name = "codepipeline"
+        Name = "cicd-codepipeline"
     }
 }

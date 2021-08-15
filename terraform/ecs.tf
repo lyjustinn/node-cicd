@@ -1,39 +1,46 @@
 resource "aws_launch_template" "ecs_launch_template" {
-    name_prefix = "ecs"
+    name_prefix = "cicd"
     image_id = "ami-09e67e426f25ce0d7"
     instance_type = "t2.micro"
 }
 
-resource "aws_autoscaling_group" "ecs_asg" {
-    name = "ecs-ag"
+resource "aws_autoscaling_group" "ecs" {
+    name = "asg"
     min_size = 1
     max_size = 2
+    availability_zones = var.ecs_az
 
     launch_template {
         id      = aws_launch_template.ecs_launch_template.id
         version = "$Latest"
     }
+
+    tag {
+        key = "AmazonECSManaged"
+        value = ""
+        propagate_at_launch = true
+    }
 }
 
-resource "aws_ecs_capacity_provider" "ecs_provider" {
-    name = "ecs_provider"
+resource "aws_ecs_capacity_provider" "ecs" {
+    name = "cicd-provider"
 
     auto_scaling_group_provider {
-        auto_scaling_group_arn = aws_autoscaling_group.ecs_asg.arn
-        managed_termination_protection = "ENABLED"
+        auto_scaling_group_arn = aws_autoscaling_group.ecs.arn
     }
 }
 
 resource "aws_ecs_cluster" "ecs" {
     name = "ecs-cd"
-    capacity_providers = [ "${aws_ecs_capacity_provider.ecs_provider.arn}" ]
+    capacity_providers = [ "cicd-provider" ]
 }
 
 resource "aws_ecs_task_definition" "ecs_task_def" {
     family = "ecs-cd-task-def"
     execution_role_arn = aws_iam_role.ecs_task_execution.arn
-    network_mode = "awsvpc"
     requires_compatibilities = [ "EC2" ]
+    memory = 512
+    network_mode = "awsvpc"
 
     container_definitions = jsonencode([
         {
@@ -70,8 +77,7 @@ resource "aws_ecs_service" "ecs_service" {
     }
 
     network_configuration {
-        subnets = aws_subnet.ecs_subnet.*.arn
-        security_groups = [ aws_security_group.ecs_lb_sg.arn ]
-        assign_public_ip = true
+        subnets = aws_subnet.ecs_subnet.*.id
+        security_groups = [ aws_security_group.ecs_lb_sg.id ]
     }
 }
