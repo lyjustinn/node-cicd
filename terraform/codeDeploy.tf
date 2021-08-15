@@ -3,7 +3,7 @@ resource "aws_codedeploy_app" "ecs_codedeploy_app" {
     name = "ecs-codedeploy-app"
 }
 
-resource "aws_codedeploy_deployment_group" "name" {
+resource "aws_codedeploy_deployment_group" "ecs" {
     app_name = aws_codedeploy_app.ecs_codedeploy_app.name
     deployment_group_name = "ecs-codedeploy-group"
     service_role_arn = aws_iam_role.codedeploy_ecs_role.arn

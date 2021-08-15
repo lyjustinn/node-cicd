@@ -27,3 +27,9 @@ variable "container_port" {
     description = "Port number the application will run on in its container"
     type = number
 }
+
+variable "image_tag" {
+    description = "image tag for ecr source action in codepipeline"
+    default = "latest"
+    type = string
+}

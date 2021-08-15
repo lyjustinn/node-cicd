@@ -101,3 +101,28 @@ resource "aws_iam_role_policy_attachment" "codedeploy_ecs_policy" {
     policy_arn = data.aws_iam_policy.AWSCodeDeployRoleForECS.arn
 }
 
+resource "aws_iam_role" "codepipeline" {
+    name = "codepipeline-ecs-cicd"
+
+    assume_role_policy = jsonencode({
+        Version = "2012-10-17",
+        Statement = [
+            {
+                Action = "sts:AssumeRole"
+                Sid = ""
+                Effect = "Allow"
+                Principal = {
+                    Service = "codepipeline.amazonaws.com"
+                }
+            }
+        ]
+    })
+}
+
+resource "aws_iam_role_policy" "codepipeline" {
+    name = "codepipline-ecs-cicd"
+    role = aws_iam_role.codepipeline.id
+
+    policy = file("${abspath(path.module)}/json/codepipelinepolicy.json")
+}
+
