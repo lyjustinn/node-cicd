@@ -74,3 +74,30 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
     role = aws_iam_role.ecs_task_execution.name
     policy_arn = data.aws_iam_policy.ECSTaskExecutionRolePolicy.arn
 }
+
+resource "aws_iam_role" "codedeploy_ecs_role" {
+    name = "code-deploy-ecs"
+    assume_role_policy = jsonencode({
+        Version = "2012-10-17",
+        Statement = [
+            {
+                Action = "sts:AssumeRole"
+                Sid = ""
+                Effect = "Allow"
+                Principal = {
+                    Service = "codedeploy.amazonaws.com"
+                }
+            }
+        ]
+    })
+}
+
+data "aws_iam_policy" "AWSCodeDeployRoleForECS" {
+    arn = "arn:aws:iam::aws:policy/AWSCodeDeployRoleForECS"
+}
+
+resource "aws_iam_role_policy_attachment" "codedeploy_ecs_policy" {
+    role = aws_iam_role.codedeploy_ecs_role.name
+    policy_arn = data.aws_iam_policy.AWSCodeDeployRoleForECS.arn
+}
+
