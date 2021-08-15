@@ -61,7 +61,7 @@ resource "aws_codepipeline" "ecr_cicd" {
                 AppSpecTemplateArtifact = "SourceArtifact"
                 AppSpecTemplatePath = "appspec.yaml"
                 Image1ArtifactName = "Image"
-                Image1ContainerName = "<IMAGE1_NAME>"
+                Image1ContainerName = "IMAGE1_NAME"
             }
         }
     }
