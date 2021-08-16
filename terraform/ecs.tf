@@ -1,45 +1,38 @@
 resource "aws_launch_template" "ecs_launch_template" {
     name_prefix = "cicd"
-    image_id = "ami-09e67e426f25ce0d7"
+    image_id = "ami-0e5fb9632ceee168f"
     instance_type = "t2.micro"
+    user_data = base64encode("#!/bin/bash\necho ECS_CLUSTER=ecs-cd >> /etc/ecs/ecs.config")
+    ebs_optimized = false
+    update_default_version = true
+    vpc_security_group_ids = [ aws_security_group.ecs_lb_sg.id ]
+
+    iam_instance_profile {
+        arn = aws_iam_instance_profile.ecs_instance.arn
+    }
 }
 
 resource "aws_autoscaling_group" "ecs" {
     name = "asg"
     min_size = 1
     max_size = 2
-    availability_zones = var.ecs_az
+    vpc_zone_identifier = aws_subnet.ecs_subnet.*.id
 
     launch_template {
         id      = aws_launch_template.ecs_launch_template.id
         version = "$Latest"
     }
-
-    tag {
-        key = "AmazonECSManaged"
-        value = ""
-        propagate_at_launch = true
-    }
-}
-
-resource "aws_ecs_capacity_provider" "ecs" {
-    name = "cicd-provider"
-
-    auto_scaling_group_provider {
-        auto_scaling_group_arn = aws_autoscaling_group.ecs.arn
-    }
 }
 
 resource "aws_ecs_cluster" "ecs" {
     name = "ecs-cd"
-    capacity_providers = [ "cicd-provider" ]
 }
 
 resource "aws_ecs_task_definition" "ecs_task_def" {
     family = "ecs-cd-task-def"
     execution_role_arn = aws_iam_role.ecs_task_execution.arn
     requires_compatibilities = [ "EC2" ]
-    memory = 512
+    memory = 50
     network_mode = "awsvpc"
 
     container_definitions = jsonencode([

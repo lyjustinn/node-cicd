@@ -3,7 +3,7 @@ data "archive_file" "source_artifact" {
     output_path = "${abspath(path.module)}/SourceArtifact.zip"
     
     source {
-        content = "{\"executionRoleArn\": \"${aws_iam_role.ecs_task_execution.arn}\",\n\"containerDefinitions\": [{\"name\": \"ecr-cicd\",\"image\": \"<IMAGE1_NAME>\",\"essential\": true,\"portMappings\": [{\"protocol\": \"tcp\",\"containerPort\": ${var.container_port}}]}],\n\"requiresCompatibilities\": [\"EC2\"],\n\"networkMode\": \"awsvpc\",\n\"family\": \"ecs-cd-task-def\",\n\"memory\": \"512\"}"
+        content = "{\"executionRoleArn\": \"${aws_iam_role.ecs_task_execution.arn}\",\n\"containerDefinitions\": [{\"name\": \"ecr-cicd\",\"image\": \"<IMAGE1_NAME>\",\"essential\": true,\"portMappings\": [{\"protocol\": \"tcp\",\"containerPort\": ${var.container_port}}]}],\n\"requiresCompatibilities\": [\"EC2\"],\n\"networkMode\": \"awsvpc\",\n\"family\": \"ecs-cd-task-def\",\n\"memory\": \"50\"}"
 
         filename = "taskdef.json"
     }
