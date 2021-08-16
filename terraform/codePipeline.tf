@@ -55,7 +55,7 @@ resource "aws_codepipeline" "ecr_cicd" {
 
             configuration = {
                 ApplicationName = aws_codedeploy_app.ecs_codedeploy_app.name
-                DeploymentGroupName = aws_codedeploy_deployment_group.ecs.id
+                DeploymentGroupName = aws_codedeploy_deployment_group.ecs.deployment_group_name
                 TaskDefinitionTemplateArtifact = "SourceArtifact"
                 TaskDefinitionTemplatePath = "taskdef.json"
                 AppSpecTemplateArtifact = "SourceArtifact"

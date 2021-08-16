@@ -49,7 +49,6 @@ resource "aws_ecs_task_definition" "ecs_task_def" {
             essential = true
             portMappings = [
                 {
-                    hostPort = 80,
                     protocol = "tcp",
                     containerPort = "${var.container_port}"
                 }
@@ -61,7 +60,7 @@ resource "aws_ecs_task_definition" "ecs_task_def" {
 resource "aws_ecs_service" "ecs_service" {
     name = "ecs-service"
     cluster = aws_ecs_cluster.ecs.id
-    task_definition = aws_ecs_task_definition.ecs_task_def.arn
+    task_definition = "${aws_ecs_task_definition.ecs_task_def.arn}"
     desired_count = 1
     launch_type = "EC2"
     scheduling_strategy = "REPLICA"
