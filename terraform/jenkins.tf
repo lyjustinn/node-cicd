@@ -35,6 +35,16 @@ resource "aws_instance" "jenkins" {
 
     user_data = <<-EOF
                 #!/bin/bash
+
+                echo "Install zip"
+                sudo apt-get update -y
+                sudo apt-get install zip unzip -y
+                
+                echo "AWS CLI"
+                curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+                unzip awscliv2.zip
+                sudo ./aws/install
+
                 echo "Install OpenJDK"
                 sudo apt update -y
                 sudo apt install default-jre -y
@@ -46,10 +56,6 @@ resource "aws_instance" "jenkins" {
                 sudo apt update -y
                 sudo apt install jenkins -y
                 sudo systemctl start jenkins
-
-                echo "Install zip"
-                sudo apt-get update -y
-                sudo apt-get install zip unzip -y
 
                 EOF
 
