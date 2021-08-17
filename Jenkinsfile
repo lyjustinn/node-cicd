@@ -22,6 +22,9 @@ pipeline {
             }
         }
         stage("upload") {
+            when {
+                branch "main"
+            }
             steps {
                 echo "upload stage"
                 sh 'pwd;ls'
