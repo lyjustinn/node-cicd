@@ -77,3 +77,76 @@ resource "aws_security_group" "jenkins_sg" {
         Name = "Allow web connections to jenkins"
     }
 }
+
+resource "aws_vpc" "elb" {
+    cidr_block = "10.1.0.0/16"
+    enable_dns_hostnames = true
+    enable_dns_support = true
+
+    tags = {
+      "Name" = "elb_vpc"
+    }
+}
+
+resource "aws_internet_gateway" "elb" {
+    vpc_id = aws_vpc.elb.id
+
+    tags = {
+        Name="elb_internet_gateway"
+    }
+}
+
+resource "aws_route_table" "elb" {
+    vpc_id = aws_vpc.elb.id
+
+    route {
+        cidr_block = "0.0.0.0/0"
+        gateway_id = aws_internet_gateway.elb.id
+    }
+
+    tags = {
+        Name="elb_route_table"
+    }
+}
+
+resource "aws_subnet" "elb" {
+    vpc_id = aws_vpc.elb.id
+    cidr_block = "10.1.0.0/24"
+    availability_zone = "${var.elb_az}"
+
+    tags = {
+        Name="elb_subnet"
+    }
+}
+
+resource "aws_route_table_association" "elb" {
+    subnet_id = aws_subnet.elb.id
+    route_table_id = aws_route_table.elb.id
+}
+
+
+resource "aws_security_group" "elb" {
+    name = "elb_security"
+    description = "Security group for elb subnet"
+    vpc_id = aws_vpc.elb.id
+
+    ingress {
+        from_port = 80
+        to_port = 80
+        protocol = "tcp"
+        description = "Allow http from specified ip"
+        cidr_blocks = [ "0.0.0.0/0" ]
+    }
+
+    egress {
+        from_port        = 0
+        to_port          = 0
+        protocol         = "-1"
+        cidr_blocks      = ["0.0.0.0/0"]
+        ipv6_cidr_blocks = ["::/0"]
+    }
+
+    tags = {
+        Name = "Allow web connections to elb"
+    }
+}

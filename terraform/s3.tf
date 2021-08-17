@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "elb_source" {
-    bucket = "elb_source"
+    bucket = "elb-source"
     acl = "private"
 
     versioning {
@@ -7,12 +7,12 @@ resource "aws_s3_bucket" "elb_source" {
     }
 
     tags = {
-      "Name" = "elb_source"
+      "Name" = "elb-source"
     }
 }
 
-resource "aws_s3_bucket" "codepipeline_artifacts" {
-    bucket = "codepipeline_artifacts"
+resource "aws_s3_bucket" "deployment_bucket" {
+    bucket_prefix = "cpipeline-"
     acl = "private"
 
     versioning {
@@ -20,6 +20,6 @@ resource "aws_s3_bucket" "codepipeline_artifacts" {
     }
 
     tags = {
-      "Name" = "codepipeline_artifacts"
+      "Name" = "cpipeline-bucket"
     }
 }
