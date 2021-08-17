@@ -17,7 +17,7 @@ app.get('/api/triple/:number', (req, res, next) => {
 });
 
 app.get('/api/ping', (req, res, next) => {
-    res.json({ping : "pong"});
+    res.json({ping : "feature"});
 });
 
 module.exports = app;
