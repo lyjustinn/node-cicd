@@ -19,7 +19,7 @@ describe("Triple", () => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
                     res.body.should.have.property('triple');
-                    res.body.should.have.property('triple').eql(4);
+                    res.body.should.have.property('triple').eql(6);
                     done();
                 });
         });
