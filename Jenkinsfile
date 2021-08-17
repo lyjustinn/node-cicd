@@ -25,8 +25,8 @@ pipeline {
             steps {
                 echo "upload stage"
                 sh 'pwd;ls'
-                sh ('mkdir -p ~/build/artifacts/s3/ && zip -r ~/build/artifacts/s3/artifact$BUILD.zip * -x \"*terraform*\" \"*node_modules*\"')
-                sh ('aws s3 cp ~/build/artifacts/s3/artifact$BUILD.zip s3://$BUCKET/')
+                sh ('mkdir -p ~/build/artifacts/s3/$BUILD/ && zip -r ~/build/artifacts/s3/$BUILD/artifact.zip * -x \"*terraform*\" \"*node_modules*\"')
+                sh ('aws s3 cp ~/build/artifacts/s3/$BUILD/artifact.zip s3://$BUCKET/')
                 sh 'ls ~/build/artifacts/s3/'
             }
         }
