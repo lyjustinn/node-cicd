@@ -9,19 +9,19 @@ const should = chai.should();
 
 chai.use(chaiHttp);
 
-describe("Double", () => {
+describe("Triple", () => {
 
-    describe('/GET double', () => {
-        it('should return double the number in an object', (done) => {
+    describe('/GET triple', () => {
+        it('should return triple the number in an object', (done) => {
             chai.request(app)
-                .get('/api/double/2')
+                .get('/api/triple/2')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
-                    res.body.should.have.property('double');
-                    res.body.should.have.property('double').eql(4);
+                    res.body.should.have.property('triple');
+                    res.body.should.have.property('triple').eql(4);
                     done();
                 });
         });
-    });
+    })
 })
