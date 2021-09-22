@@ -36,7 +36,7 @@ Follow the steps below to try out the repo:
        ```
     2. Suscribe to these events: Check run, Check suite, Pull request, Push, Repository
     3. Pick a name of your choice
-    4. Set the web hook url to `https://your-jenkins-dns-or-ip/github-webhook/`
+    4. Set the web hook url to `https://your-jenkins-dns-or-ip:8080/github-webhook/`
     5. Generate a private RSA key for your GitHub app.
         1. First run `openssl pkcs8 -topk8 -inform PEM -outform PEM -in key-in-your-downloads-folder.pem -out converted-github-app.pem -nocrypt`
         2. Then `openssl rsa -in converted-github-app.pem > key.pub`
